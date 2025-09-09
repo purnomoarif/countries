@@ -32,12 +32,55 @@ app.get("/countries", (c) => {
   return c.json(countries);
 });
 
-app.post();
+// POST /countries
+app.post("/countries", async (c) => {
+  const json = await c.req.json();
+  const newCountry: country = {
+    id: countries.length + 1,
+    name: json.name,
+    description: json.description,
+    imageUrl: json.imageUrl,
+  };
+  countries.push(newCountry);
+  return c.json(newCountry, 201);
+});
 
-app.delete();
+// DELETE / countries
+app.delete("/countries", (c) => {
+  countries = [];
+  return c.json({ message: "All countries deleted" }, 201);
+});
 
-app.patch();
+// DELETE /countries/:id
 
-app.put();
+app.delete("/countries/:id", (c) => {
+  const id = Number(c.req.param("id"));
+  countries = countries.filter((country) => country.id !== id);
+  return c.json({ message: "Country deleted" }, 201);
+});
+
+// PATCH /countries/:id
+app.patch("/countries/:id", async (c) => {
+  const id = Number(c.req.param("id"));
+  const json = await c.req.json();
+  const country = countries.find((country) => country.id === id);
+  if (country) {
+    Object.assign(country, json);
+    return c.json(country);
+  }
+  return c.json({ message: "Country not found" }, 404);
+});
+
+// PUT /countries/:id
+app.put("/countries/:id", async (c) => {
+  const id = Number(c.req.param("id"));
+  const json = await c.req.json();
+  const country = countries.find((country) => country.id === id);
+  if (country) {
+    Object.assign(country, json);
+    return c.json(country);
+  }
+  return c.json({ message: "Country not found" }, 404);
+});
 
 export default app;
