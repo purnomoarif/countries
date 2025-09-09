@@ -19,6 +19,17 @@ let countries: country[] = [
   { id: 7, name: "Brunei" },
 ];
 
+app.get("/", (c) => {
+  return c.json({
+    title: "Countries API",
+    author: "Nama Kita",
+  });
+});
+
+app.get("/countries", (c) => {
+  return c.json(countries);
+});
+
 app.get("/countries/:id", (c) => {
   const id = Number(c.req.param("id"));
   const country = countries.find((country) => country.id === id);
@@ -28,18 +39,14 @@ app.get("/countries/:id", (c) => {
   );
 });
 
-app.get("/countries", (c) => {
-  return c.json(countries);
-});
-
 // POST /countries
 app.post("/countries", async (c) => {
-  const json = await c.req.json();
+  const body = await c.req.json();
   const newCountry: country = {
-    id: countries.length + 1,
-    name: json.name,
-    description: json.description,
-    imageUrl: json.imageUrl,
+    id: countries[countries.length - 1].id + 1,
+    name: body.name,
+    description: body.description,
+    imageUrl: body.imageUrl,
   };
   countries.push(newCountry);
   return c.json(newCountry, 201);
