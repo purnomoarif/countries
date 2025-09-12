@@ -14,6 +14,22 @@ REST API to explore countries information.
 | `countries/:id` | `PUT`       | Updates a country by ID, create data if not exists. |
 | `countries/:id` | `PATCH`     | Updates a country by ID.                            |
 
+## ERD
+
+1.  countries
+
+- id
+- name
+- createdAt
+- updatedAt
+
+2. continents
+
+- id
+- countryId
+- createdAt
+- updatedAt
+
 ## Get Started
 
 To install dependencies:
