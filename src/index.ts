@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { db } from "./lib/db";
 
 const app = new Hono();
 
@@ -26,11 +27,14 @@ app.get("/", (c) => {
   });
 });
 
-app.get("/countries", (c) => {
+// GET /countries
+app.get("/countries", async (c) => {
+  const countries = await db.country.findMany();
   return c.json(countries);
 });
 
-app.get("/countries/:id", (c) => {
+// GET /country by id
+app.get("/country/:id", (c) => {
   const id = Number(c.req.param("id"));
   const country = countries.find((country) => country.id === id);
   return c.json(
@@ -43,22 +47,16 @@ app.get("/countries/:id", (c) => {
 app.post("/countries", async (c) => {
   const body = await c.req.json();
 
-  const foundCountry = countries.find(
-    (country) => country.name.toLowerCase() === body.name.toLowerCase()
-  );
-
-  if (foundCountry) {
-    return c.json({ message: "Country already exists" }, 409);
-  }
-
-  const newCountry = {
-    id: countries.length ? countries[countries.length - 1].id + 1 : 1,
-    ...body,
+  const newCountry: country = {
+    id: countries.length > 0 ? countries[countries.length - 1].id + 1 : 1,
+    name: body.name,
+    description: body.description,
+    imageUrl: body.imageUrl,
   };
 
   countries.push(newCountry);
 
-  return c.json({ message: "country added", newCountry }, 200);
+  return c.json(newCountry, 201);
 });
 
 // DELETE / countries
