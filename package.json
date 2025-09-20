@@ -6,6 +6,7 @@
     "start": "bun run src/index.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.16.2",
     "@types/pg": "^8.15.5",
     "hono": "^4.9.5",
     "pg": "^8.16.3"

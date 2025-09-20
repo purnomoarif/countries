@@ -70,9 +70,19 @@ app.delete("/countries", (c) => {
 // DELETE /countries/:id
 
 app.delete("/countries/:id", (c) => {
-  const id = Number(c.req.param("id"));
-  countries = countries.filter((country) => country.id !== id);
-  return c.json({ message: "Country deleted" }, 201);
+  const id = c.req.param("id");
+
+  const foundCountry = countries.find((country) => country.id === Number(id));
+
+  if (!foundCountry) {
+    return c.json({ message: "Country not found" }, 404);
+  }
+
+  const newCountries = countries.filter((p) => p.id !== Number(id));
+
+  countries.splice(0, countries.length, ...newCountries);
+
+  return c.json({ message: "Country deleted", deletedCountry: foundCountry });
 });
 
 // PATCH /countries/:id
