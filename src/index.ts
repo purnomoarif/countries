@@ -42,14 +42,23 @@ app.get("/countries/:id", (c) => {
 // POST /countries
 app.post("/countries", async (c) => {
   const body = await c.req.json();
-  const newCountry: country = {
-    id: countries.length + 1,
-    name: body.name,
-    description: body.description,
-    imageUrl: body.imageUrl,
+
+  const foundCountry = countries.find(
+    (country) => country.name.toLowerCase() === body.name.toLowerCase()
+  );
+
+  if (foundCountry) {
+    return c.json({ message: "Country already exists" }, 409);
+  }
+
+  const newCountry = {
+    id: countries.length ? countries[countries.length - 1].id + 1 : 1,
+    ...body,
   };
+
   countries.push(newCountry);
-  return c.json(newCountry, 201);
+
+  return c.json({ message: "country added", newCountry }, 200);
 });
 
 // DELETE / countries
