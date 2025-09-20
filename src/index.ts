@@ -1,15 +1,16 @@
 import { Hono } from "hono";
+import { db } from "./lib/db";
 
 const app = new Hono();
 
-type country = {
+type Country = {
   id: number;
   name: string;
   description?: string;
   imageUrl?: string;
 };
 
-let countries: country[] = [
+let countries: Country[] = [
   { id: 1, name: "Indonesia" },
   { id: 2, name: "Malaysia" },
   { id: 3, name: "Singapore" },
@@ -26,7 +27,9 @@ app.get("/", (c) => {
   });
 });
 
-app.get("/countries", (c) => {
+app.get("/countries", async (c) => {
+  const countries = await db.country.findMany();
+
   return c.json(countries);
 });
 

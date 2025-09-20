@@ -8,17 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model countries {
-  id   Int    @id
+model Country {
+  id   Int    @id @default(autoincrement())
   name String @db.VarChar(100)
 }
 
-model indonesia {
-  id   Int    @id
-  name String @db.VarChar(100)
-}
-
-model continents {
-  id   Int    @id
+model Continent {
+  id   Int    @id @default(autoincrement())
   name String @db.VarChar(100)
 }
