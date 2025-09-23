@@ -30,7 +30,6 @@ app.get("/", (c) => {
 // GET /countries
 app.get("/countries", async (c) => {
   const countries = await db.country.findMany();
-
   return c.json(countries);
 });
 
@@ -38,21 +37,18 @@ app.get("/countries", async (c) => {
 app.get("/countries/:id", async (c) => {
   const id = Number(c.req.param("id"));
 
-  const countryById = await db.country.findUnique({ where: { id } });
-  if (!countryById) return c.notFound();
+  const country = await db.country.findUnique({
+    where: { id },
+  });
+  if (!country) return c.notFound();
 
-  return c.json(countryById);
+  return c.json(country);
 });
 
 // POST /countries
 app.post("/countries", async (c) => {
   const body = await c.req.json();
-  const newCountry = await db.country.create({
-    data: {
-      name: body.name,
-    },
-  });
-  return c.json(newCountry, 201);
+  return c.json({});
 });
 
 export default app;

@@ -1,18 +1,27 @@
-// Optional, if needed
-// import "dotenv/config";
+import { PrismaClient } from "./src/generated/prisma";
 
-import * as pg from "pg";
+const prisma = new PrismaClient();
 
-const client = new pg.Client({
-  connectionString: process.env.DATABASE_URL,
-});
+async function main() {
+  // Create a new country
+  const newCountry = await prisma.country.create({
+    data: {
+      name: "Palestine",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  });
+  console.log({ newCountry });
+  const countries = await prisma.country.findMany();
+  console.log({ countries });
+}
 
-await client.connect();
-
-const res = await client.query("SELECT * FROM countries");
-
-const countries = res.rows;
-
-console.log({ countries });
-
-await client.end();
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
