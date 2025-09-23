@@ -34,4 +34,25 @@ app.get("/countries", async (c) => {
   return c.json(countries);
 });
 
+// GET /countries/:id
+app.get("/countries/:id", async (c) => {
+  const id = Number(c.req.param("id"));
+
+  const countryById = await db.country.findUnique({ where: { id } });
+  if (!countryById) return c.notFound();
+
+  return c.json(countryById);
+});
+
+// POST /countries
+app.post("/countries", async (c) => {
+  const body = await c.req.json();
+  const newCountry = await db.country.create({
+    data: {
+      name: body.name,
+    },
+  });
+  return c.json(newCountry, 201);
+});
+
 export default app;
