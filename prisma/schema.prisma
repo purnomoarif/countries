@@ -12,14 +12,18 @@ model Country {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(100)
 
+  continent   Continent? @relation(fields: [continentId], references: [id])
+  continentId Int?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-
 model Continent {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(100)
+
+  countries Country[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
