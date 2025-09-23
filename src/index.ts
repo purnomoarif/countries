@@ -48,7 +48,14 @@ app.get("/countries/:id", async (c) => {
 // POST /countries
 app.post("/countries", async (c) => {
   const body = await c.req.json();
-  return c.json({});
+
+  const newCountry = await db.country.create({
+    data: {
+      name: body.name,
+    },
+  });
+
+  return c.json(newCountry, 201);
 });
 
 export default app;
