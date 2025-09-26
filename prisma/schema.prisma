@@ -21,7 +21,7 @@ model Country {
 
 model Continent {
   id      Int       @id @default(autoincrement())
-  name    String    @db.VarChar(100)
+  name    String    @unique @db.VarChar(100)
   Country Country[]
 
   createdAt DateTime @default(now())
