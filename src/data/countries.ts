@@ -10,4 +10,22 @@ export const countries: Country[] = [
     name: "Indonesia",
     continent: "Asia",
   },
+
+  {
+    id: 2,
+    name: "Brazil",
+    continent: "America",
+  },
+
+  {
+    id: 3,
+    name: "Senegal",
+    continent: "Africa",
+  },
+
+  {
+    id: 4,
+    name: "Germany",
+    continent: "Europe",
+  },
 ];
