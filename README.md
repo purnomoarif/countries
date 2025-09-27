@@ -2,6 +2,8 @@
 
 REST API to explore countries information.
 
+deployed at :https://countries.up.railway.app/
+
 ## REST API specification
 
 | Endpoint Path   | HTTP Method | Description                                         |
@@ -45,3 +47,8 @@ bun dev
 ```
 
 open http://localhost:3000
+
+## To do
+
+- [ ] fix seed.ts
+- [] fix countries.ts from routes,

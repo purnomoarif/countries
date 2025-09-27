@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { db } from "../lib/db";
 
 const countriesRoute = new Hono();
-const countries = new Hono();
 
 // GET /countries
 countriesRoute.get("/", async (c) => {
@@ -17,27 +16,57 @@ countriesRoute.get("/", async (c) => {
 
 // GET /countries/:id
 countriesRoute.get("/:id", async (c) => {
-  const id = Number(c.req.param("id"));
+  try {
+    const id = Number(c.req.param("id"));
 
-  const country = await db.country.findUnique({
-    where: { id },
-  });
-  if (!country) return c.notFound();
+    const country = await db.country.findUnique({
+      where: { id },
+      include: { continent: true },
+    });
+    if (!country) return c.notFound();
 
-  return c.json(country);
+    return c.json(country);
+  } catch (error) {
+    console.error("Error fetching country:", error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
 });
 
 // POST /countries
 countriesRoute.post("/", async (c) => {
-  const body = await c.req.json();
+  try {
+    const body = await c.req.json();
 
-  const newCountry = await db.country.create({
-    data: {
-      name: body.name,
-    },
-  });
+    if (!body.name || !body.continentId) {
+      return c.json(
+        {
+          error: "Missing required fields: name, continentId",
+        },
+        400
+      );
+    }
 
-  return c.json(newCountry, 201);
+    if (body.continentId) {
+      const continentExists = await db.continent.findUnique({
+        where: { id: Number(body.continentId) },
+      });
+      if (!continentExists) {
+        return c.json({ error: "Continent not found" }, 400);
+      }
+    }
+
+    const newCountry = await db.country.create({
+      data: {
+        name: body.name,
+        continentId: Number(body.continentId),
+      },
+    });
+
+    return c.json(newCountry, 201);
+  } catch (error) {
+    console.error("Error creating country:", error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
 });
 
 // DELETE /countries

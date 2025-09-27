@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { db } from "../lib/db";
 
 const continentsRoute = new Hono();
-const continents = new Hono();
 
 // GET /continents
 continentsRoute.get("/", async (c) => {
@@ -25,15 +24,20 @@ continentsRoute.get("/:id", async (c) => {
 
 // POST /continents
 continentsRoute.post("/", async (c) => {
-  const body = await c.req.json();
+  try {
+    const body = await c.req.json();
 
-  const newContinent = await db.continent.create({
-    data: {
-      name: body.name,
-    },
-  });
+    const newContinent = await db.continent.create({
+      data: {
+        name: body.name,
+      },
+    });
 
-  return c.json(newContinent, 201);
+    return c.json(newContinent, 201);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: "Failed to create continent" }, 400);
+  }
 });
 
 // DELETE /continents
